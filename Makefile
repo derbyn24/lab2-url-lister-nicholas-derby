@@ -23,6 +23,13 @@ prepare:
 	curl https://en.wikipedia.org/wiki/MapReduce > /tmp/input.txt
 	hdfs dfs -put /tmp/input.txt input/file02
 
+prepare_dataproc:
+	-hdfs dfs -mkdir -p /user/$(USER)/input
+	curl https://en.wikipedia.org/wiki/Apache_Hadoop > /tmp/input.txt
+	hdfs dfs -put /tmp/input.txt /user/$(USER)/input/file01
+	curl https://en.wikipedia.org/wiki/MapReduce > /tmp/input.txt
+	hdfs dfs -put /tmp/input.txt /user/$(USER)/input/file02
+
 filesystem:
 	-hdfs dfs -mkdir /user
 	-hdfs dfs -mkdir /user/$(USER)
@@ -34,6 +41,10 @@ run: WordCount1.jar
 run_url: UrlCount.jar
 	-rm -rf output
 	hadoop jar UrlCount.jar UrlCount input output
+
+run_url_dataproc: UrlCount.jar
+	-hdfs dfs -rm -r /user/$(USER)/output
+	hadoop jar UrlCount.jar UrlCount /user/$(USER)/input /user/$(USER)/output
 
 ##
 ## You may need to change the path for this depending
