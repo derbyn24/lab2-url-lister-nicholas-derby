@@ -20,7 +20,7 @@ public class UrlCount {
     private final static IntWritable one = new IntWritable(1);
     private Text url = new Text();
 
-    private final static Pattern urlPattern = Pattern.compile("href=\"[^\"]*\"");
+    private final static Pattern urlPattern = Pattern.compile("href=\"([^\"]*)\"");
 
     public void map(Object key, Text value, Context context
                     ) throws IOException, InterruptedException {
@@ -28,7 +28,7 @@ public class UrlCount {
    	Matcher matcher = urlPattern.matcher(line);
 	
 	while (matcher.find()) {
-		String foundUrl = matcher.group();
+		String foundUrl = matcher.group(1);
 		url.set(foundUrl);
 		context.write(url, one);
       }
